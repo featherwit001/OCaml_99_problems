@@ -68,4 +68,34 @@ let rec encodem_aux r acc = function
 let encodem lst = List.rev (encodem_aux None [] lst)
 
 
+(** <12> Decode a Run-Length Encoded List  *)
+let rec decode_elt_aux acc n c =
+    if n = 0 then acc else decode_elt_aux (c :: acc) (n - 1) c 
 
+let rec decode_aux acc = function
+  | [] -> acc
+  | One c :: t -> decode_aux (decode_elt_aux acc 1 c) t  
+  | Many (n, c) :: t -> decode_aux (decode_elt_aux acc n c) t
+
+(* #  decode [Many (4, "a"); One "b"; Many (2, "c"); Many (2, "a"); One "d"; Many (4, "e")];;
+   - : string list =
+   ["a"; "a"; "a"; "a"; "b"; "c"; "c"; "a"; "a"; "d"; "e"; "e"; "e"; "e"] *)
+let decode rlst = List.rev (decode_aux [] rlst)
+
+
+(** <13> Run-Length Encoding of a List (Direct Solution)   *)
+(* Require n >= 1  *)
+let create_elt n c =
+  if n = 1 then One c else Many (n, c) 
+
+let rec encoded_aux  count acc = function
+  | [] -> acc
+  | [h] -> create_elt (count + 1) h :: acc
+  | h1 :: (h2 :: _t as t) ->
+      if h1 = h2 then encoded_aux (count + 1) acc t
+                 else encoded_aux 0 (create_elt (count + 1) h1 :: acc) t
+
+(* # encode ["a";"a";"a";"a";"b";"c";"c";"a";"a";"d";"e";"e";"e";"e"];;
+  - : string rle list =
+  [Many (4, "a"); One "b"; Many (2, "c"); Many (2, "a"); One "d";Many (4, "e")] *)
+let encoded lst = List.rev (encoded_aux 0 [] lst)
