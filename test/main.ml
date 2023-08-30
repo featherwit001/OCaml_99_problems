@@ -123,19 +123,19 @@ let pp_list pp_elt lst =
 let pp_intlst = pp_list string_of_int
 
 let cmp_lists_like_sets lst1 lst2 =
-  let uniq1 = List.sort_uniq compare lst1 in
-  let uniq2 = List.sort_uniq compare lst2 in
+  let uniq1 = List.sort_uniq compare (List.map (List.sort_uniq compare) lst1) in
+  let uniq2 = List.sort_uniq compare (List.map (List.sort_uniq compare) lst2) in
    List.length uniq1 = List.length lst1
    &&
    List.length uniq2 = List.length lst2
    &&
    uniq1 = uniq2
 
-let make_test_randlist_equal n p expect output =
-  n >:: (fun _ -> assert_equal expect output ~printer:p)
+(* let make_test_randlist_equal n p expect output =
+  n >:: (fun _ -> assert_equal expect output ~printer:p) *)
 
-let make_test_randlist_equal n p c expect output =
-    n >:: (fun _ -> assert_equal expect output ~cmp:cmp_lists_like_sets ~printer:p)  
+let make_test_randlist_equal n c expect output =
+    n >:: (fun _ -> assert_equal expect output ~cmp:c)  
   
 let tests_for_23to30 = "tests_for23to30" >::: [
   make_test_for_equal "range"
@@ -152,9 +152,19 @@ let tests_for_23to30 = "tests_for23to30" >::: [
 
   make_test_for_equal "permutation"
   ["c"; "d"; "f"; "e"; "b"; "a"]
-  (permutation ["a"; "b"; "c"; "d"; "e"; "f"])
+  (permutation ["a"; "b"; "c"; "d"; "e"; "f"]);
 
-  
+  make_test_randlist_equal "combination"  cmp_lists_like_sets 
+  [["a"; "b"]; ["a"; "c"]; ["a"; "d"]; ["b"; "c"]; ["b"; "d"]; ["c"; "d"]]
+  (extract_combination 2 ["a"; "b"; "c"; "d"]);
+
+  make_test_randlist_equal "combination_iter"  cmp_lists_like_sets 
+  [["a"; "b"]; ["a"; "c"]; ["a"; "d"]; ["b"; "c"]; ["b"; "d"]; ["c"; "d"]]
+  (combination_iter 2 ["a"; "b"; "c"; "d"]);
+
+  make_test_for_equal "combination_iter big"
+  184756
+  (List.length (combination_iter 10 (range 1 20)))
 ]
 
 

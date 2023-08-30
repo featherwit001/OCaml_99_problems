@@ -37,6 +37,7 @@ let permutation lst = permutation_aux [] lst (List.length lst)
      Chosen From the N Elements of a List *)
 
 (* 
+(* the max is C (10, 20) *)
 let rec extract_combination k lst = 
   if k <= 0 then [[]]
   else match lst with
@@ -46,15 +47,48 @@ let rec extract_combination k lst =
       let without_h = extract_combination k t in 
     with_h @ without_h *)
 
-
-  (* error  *)
-let rec combination_aux acc k lst = 
-  if k <= 0 then acc
+let rec combination_aux acc cur k lst = 
+  if k <= 0 then cur :: acc
   else match lst with
-    | [] -> acc
+    | [] -> acc (* cur is shorter than k *)
     | h :: t -> 
-      let with_h = combination_aux (List.map (fun elt -> h :: elt) acc) (k - 1) t in
-      let without_h = combination_aux acc k t in 
+      let with_h = combination_aux acc (h :: cur) (k - 1) t in
+      let without_h = combination_aux acc cur k t in 
     with_h @ without_h
 
-let extract_combination k lst = combination_aux [[]] k lst
+let extract_combination k lst = combination_aux [] [] k lst
+
+
+(* index form 0 , elts must be uniq*)
+(* the easy version is in the ../combinations.py 
+  which includes the iter funciton and simulation*)
+let combination_iter k lst = 
+  let res = ref [] in
+  let lst = List.sort_uniq compare lst in
+  (* get elt form index *)
+  let arr = Array.of_list lst in
+  (* get index form elt *)
+  let hash = lst 
+             |> List.mapi (fun i e -> (e, i)) 
+             |> List.to_seq
+             |> Hashtbl.of_seq
+  in
+  let n = Array.length arr in 
+  let stack = Stack.create () in 
+    (* n - k means containing the last elt 
+    which can be conbined with the rest of elts to meet the k elts *)
+    List.iteri (fun i e -> if i <= n - k then Stack.push (1, [e]) stack else ()) lst;
+    (* simulate the combination *)
+  while not ( Stack.is_empty stack) do
+    let len , cur = (Stack.pop stack) in 
+    if len = k then res := cur :: !res
+    else 
+      match cur with
+      | [] -> failwith "cur is emtpy impossible"
+      | h :: _t as cur-> let indexh =  Hashtbl.find hash h in 
+        for i = indexh + 1 to len + n - k do
+          (* if len + n - i >= k then *)
+          Stack.push ( len + 1, arr.(i) :: cur) stack 
+        done  
+  done;
+  !res
