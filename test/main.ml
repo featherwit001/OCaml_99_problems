@@ -1,10 +1,10 @@
 open OUnit2
 open Ocaml99
-open One_to_seven
-open Eight_to_thirteen
-open Fourteen_to_twenty_one
-open Twenty_two_to_thirty
-
+open A_1to7
+open B_8to13
+open C_14to21
+open D_22to28
+open E_29to33
 
 let make_test_for_equal n expect output =
   n >:: (fun _ -> assert_equal expect output)
@@ -30,7 +30,7 @@ let tests_for_1to7 = "tests_for_1to7" >::: [
     (flatten [One "a"; Many [One "b"; Many [One "c" ;One "d"]; One "e"]]);
 ]
 
-let tests_for_8to13 = "tests_for_8to14" >::: [
+let tests_for_8to13 = "tests_for_8to13" >::: [
   make_test_for_equal "compress"  
   ["a"; "b"; "c"; "a"; "d"; "e"]
   (compress ["a"; "a"; "a"; "a"; "b"; "c"; "c"; "a"; "a"; "d"; "e"; "e"; "e"; "e"]);
@@ -56,7 +56,7 @@ let tests_for_8to13 = "tests_for_8to14" >::: [
   (encoded ["a";"a";"a";"a";"b";"c";"c";"a";"a";"d";"e";"e";"e";"e"])
 ]
 
-let tests_for_14to22 = "tests_for_14to22" >::: [
+let tests_for_14to21 = "tests_for_14to21" >::: [
   make_test_for_equal "duplicate" 
   ["a"; "a"; "b"; "b"; "c"; "c"; "c"; "c"; "d"; "d"]
   (duplicate ["a"; "b"; "c"; "c"; "d"]);
@@ -122,7 +122,7 @@ let pp_list pp_elt lst =
 
 let pp_intlst = pp_list string_of_int
 
-let cmp_lists_like_sets lst1 lst2 =
+let cmp_llists_like_sets lst1 lst2 =
   let uniq1 = List.sort_uniq compare (List.map (List.sort_uniq compare) lst1) in
   let uniq2 = List.sort_uniq compare (List.map (List.sort_uniq compare) lst2) in
    List.length uniq1 = List.length lst1
@@ -131,13 +131,29 @@ let cmp_lists_like_sets lst1 lst2 =
    &&
    uniq1 = uniq2
 
+
+let cmp_lllists_like_sets lll1 lll2 =
+  let uniq1 = List.sort_uniq compare (
+                List.map (fun ll -> 
+                  List.sort_uniq compare 
+                   (List.map (fun l -> List.sort_uniq compare l) ll)) lll1) in
+  let uniq2 =  List.sort_uniq compare (
+                  List.map (fun ll -> 
+                    List.sort_uniq compare 
+                    (List.map (fun l -> List.sort_uniq compare l) ll)) lll2) in
+    List.length uniq1 = List.length lll1
+    &&
+    List.length uniq2 = List.length lll2
+    &&
+    uniq1 = uniq2
+
 (* let make_test_randlist_equal n p expect output =
   n >:: (fun _ -> assert_equal expect output ~printer:p) *)
 
 let make_test_randlist_equal n c expect output =
     n >:: (fun _ -> assert_equal expect output ~cmp:c)  
   
-let tests_for_23to30 = "tests_for23to30" >::: [
+let tests_for_22to28 = "tests_for22to28" >::: [
   make_test_for_equal "range"
   [4; 5; 6; 7; 8; 9]
   (range 4 9);
@@ -154,23 +170,76 @@ let tests_for_23to30 = "tests_for23to30" >::: [
   ["c"; "d"; "f"; "e"; "b"; "a"]
   (permutation ["a"; "b"; "c"; "d"; "e"; "f"]);
 
-  make_test_randlist_equal "combination"  cmp_lists_like_sets 
+  make_test_randlist_equal "combination"  cmp_llists_like_sets 
   [["a"; "b"]; ["a"; "c"]; ["a"; "d"]; ["b"; "c"]; ["b"; "d"]; ["c"; "d"]]
   (extract_combination 2 ["a"; "b"; "c"; "d"]);
 
-  make_test_randlist_equal "combination_iter"  cmp_lists_like_sets 
+  make_test_randlist_equal "combination_iter"  cmp_llists_like_sets 
   [["a"; "b"]; ["a"; "c"]; ["a"; "d"]; ["b"; "c"]; ["b"; "d"]; ["c"; "d"]]
   (combination_iter 2 ["a"; "b"; "c"; "d"]);
 
   make_test_for_equal "combination_iter big"
   184756
-  (List.length (combination_iter 10 (range 1 20)))
+  (List.length (combination_iter 10 (range 1 20)));
+
+  make_test_randlist_equal "group" cmp_lllists_like_sets
+  [[["a"; "b"]; ["c"]]; [["a"; "c"]; ["b"]]; [["b"; "c"]; ["a"]];
+ [["a"; "b"]; ["d"]]; [["a"; "c"]; ["d"]]; [["b"; "c"]; ["d"]];
+ [["a"; "d"]; ["b"]]; [["b"; "d"]; ["a"]]; [["a"; "d"]; ["c"]];
+ [["b"; "d"]; ["c"]]; [["c"; "d"]; ["a"]]; [["c"; "d"]; ["b"]]]
+ (group ["a"; "b"; "c"; "d"] [2; 1]);
+
+
+ make_test_randlist_equal "group" cmp_lllists_like_sets
+  [[["a"; "b"]; ["c"]]; [["a"; "c"]; ["b"]]; [["b"; "c"]; ["a"]];
+ [["a"; "b"]; ["d"]]; [["a"; "c"]; ["d"]]; [["b"; "c"]; ["d"]];
+ [["a"; "d"]; ["b"]]; [["b"; "d"]; ["a"]]; [["a"; "d"]; ["c"]];
+ [["b"; "d"]; ["c"]]; [["c"; "d"]; ["a"]]; [["c"; "d"]; ["b"]]]
+ (group_iter ["a"; "b"; "c"; "d"] [2; 1]);
+
+  make_test_for_equal "length_sort" 
+  [["o"]; ["d"; "e"]; ["d"; "e"]; ["m"; "n"]; ["a"; "b"; "c"]; ["f"; "g"; "h"];
+ ["i"; "j"; "k"; "l"]]
+  (length_sort [["a"; "b"; "c"]; ["d"; "e"]; ["f"; "g"; "h"]; ["d"; "e"];
+  ["i"; "j"; "k"; "l"]; ["m"; "n"]; ["o"]]);
+
+  make_test_for_equal "frequency_sort"
+  [["i"; "j"; "k"; "l"]; ["o"]; ["a"; "b"; "c"]; ["f"; "g"; "h"]; ["d"; "e"];
+ ["d"; "e"]; ["m"; "n"]]
+  (frequency_sort [["a"; "b"; "c"]; ["d"; "e"]; ["f"; "g"; "h"]; ["d"; "e"];
+  ["i"; "j"; "k"; "l"]; ["m"; "n"]; ["o"]]);
 ]
 
+let gen_tup_int = QCheck.Gen.(tup2 int int)
+let arb_gen_tup = QCheck.make gen_tup_int 
+let is_mod_floor (a, b) =
+  a mod b = a - b * int_of_float (floor (float_of_int a) /. (float_of_int b))
+let qtest_is_mod_floor = QCheck.Test.make ~name:"is_mod_floor" ~count:100
+                            arb_gen_tup is_mod_floor
+
+let _ = QCheck_runner.run_tests [qtest_is_mod_floor]
+
+let tests_for_29to33 = "tests_for_29to33" >::: [
+  make_test_for_equal "is_prime1" true (is_prime 7);
+  make_test_for_equal "is_prime2" false (is_prime 1);
+  make_test_for_equal "is_prime3" false (is_prime 12);
+  make_test_for_equal "gcd" 1 (gcd 13 27);
+  make_test_for_equal "totient function 1" 4 (phi 10);
+  make_test_for_equal "totient function 2" 12 (phi 13);
+  make_test_for_equal "totient function 2" 1 (phi 1);
+  make_test_for_equal "factor1"  [3; 3; 5; 7] (factors 315);
+  make_test_for_equal "factor2"  [(3, 2); (5, 1); (7, 1)] (factors2 315);
+  make_test_for_equal "factor2" [(2, 1); (5, 1)] (factors2 10);
+  make_test_for_equal "totient function improved " 4 (phi_improved 10);
+  make_test_for_equal "totient function improved " 12 (phi_improved 13);
+  make_test_for_equal "totient function improved " 1 (phi_improved 1);
+
+]
 
 let all_tests = "all tests" >::: [tests_for_1to7; 
                                   tests_for_8to13;
-                                  tests_for_14to22;
-                                  tests_for_23to30]
+                                  tests_for_14to21;
+                                  tests_for_22to28;
+                                  tests_for_29to33]
 
 let _ = run_test_tt_main all_tests

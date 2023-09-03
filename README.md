@@ -67,3 +67,26 @@ done
 
 There is some room for optimization that 
 if the len of current combination plus amount of the elts whose index from i (the elt to be appended) to n - 1 (the ending elt) is less than k, which means it is impossile to meet the k requirement like the init stack situation, we can neglect the i elt to ending elt.
+
+## 27 Group the Elements of a Set Into Disjoint Subsets 
+
+like 26, but n recursion path (n is given)
+
+the main diffculty is change the list elt
+
+the main idea is one pass throught the lst whose elts will be ditributed into n sets
+
+for each elt, it could put into set1, set2, ... , setn or just skip it. 
+There are n + 1 recusion path
+
+the base case is that all elts in sizes are 0.
+
+each recusive function carry the acc(res) cur lst sizes
+
+the interation solution is alse similar to <26> interation solution.
+
+but add the last elt inerted to cur and the sizes to stack element.
+(inspired by this, <26> inter solution is alse improved by recording the last elt inserted rather than pattern matching the cur list to get the head elt.)
+
+the interation solution is better than recursion solution on stack sizes,
+but it's a little bit complex.

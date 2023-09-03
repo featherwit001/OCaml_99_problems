@@ -1,4 +1,5 @@
 (library
  (name ocaml99)
  ; (public_name ocaml99 )
+ (libraries unix)
 ) 
