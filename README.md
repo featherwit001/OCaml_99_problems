@@ -90,3 +90,17 @@ but add the last elt inerted to cur and the sizes to stack element.
 
 the interation solution is better than recursion solution on stack sizes,
 but it's a little bit complex.
+
+
+## 34 Determine the Prime Factors of a Given Positive Integer (2)
+
+O(log n ) ~ O(sqrt n)
+
+## 37  A List of Prime Numbers 
+
+sieve of Eratosthenes : O(n*loglogn)
+
+linear sieve: O(n) 
+get rid of composite numbers with its smallest prime factor.
+
+quit loop like break

@@ -4,7 +4,6 @@ open A_1to7
 open B_8to13
 open C_14to21
 open D_22to28
-open E_29to33
 
 let make_test_for_equal n expect output =
   n >:: (fun _ -> assert_equal expect output)
@@ -219,7 +218,9 @@ let qtest_is_mod_floor = QCheck.Test.make ~name:"is_mod_floor" ~count:100
 
 let _ = QCheck_runner.run_tests [qtest_is_mod_floor]
 
-let tests_for_29to33 = "tests_for_29to33" >::: [
+
+open E_29to39
+let tests_for_29to39 = "tests_for_29to39" >::: [
   make_test_for_equal "is_prime1" true (is_prime 7);
   make_test_for_equal "is_prime2" false (is_prime 1);
   make_test_for_equal "is_prime3" false (is_prime 12);
@@ -233,13 +234,18 @@ let tests_for_29to33 = "tests_for_29to33" >::: [
   make_test_for_equal "totient function improved " 4 (phi_improved 10);
   make_test_for_equal "totient function improved " 12 (phi_improved 13);
   make_test_for_equal "totient function improved " 1 (phi_improved 1);
+  make_test_for_equal "all_primes" 1000 (List.length (all_primes 2 7920));
+  make_test_for_equal "goldbach" (5, 23) (goldbach 28);
 
+  make_test_for_equal "goldbach_list" 
+  [(10, (3, 7)); (12, (5, 7)); (14, (3, 11)); (16, (3, 13)); (18, (5, 13));(20, (3, 17))]
+  (goldbach_list 9 20);
 ]
 
 let all_tests = "all tests" >::: [tests_for_1to7; 
                                   tests_for_8to13;
                                   tests_for_14to21;
                                   tests_for_22to28;
-                                  tests_for_29to33]
+                                  tests_for_29to39]
 
 let _ = run_test_tt_main all_tests

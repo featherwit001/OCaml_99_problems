@@ -102,4 +102,62 @@ let timeit f n =
   let t1 = Unix.gettimeofday () in
    t1 -. t0
 
+(** <37>  A List of Prime Numbers 
+    Require: a must be 2*)
+let all_primes _a n = 
+  let primes = Array.make (n+10) 0 in 
+  let count = ref 0 in
+  let st = Array.make (n+10) false in 
+  let i = ref 2 in
+  while !i <= n do
+    if st.(!i) = false then begin
+      primes.(!count) <- !i;
+      count := !count + 1;
+      end;
+    (* Printf.printf "i = %d filter: " !i; *)
+    let j = ref 0 in
+    let quit_loop = ref false in 
+    while (primes.(!j) <= n / !i ) &&(not !quit_loop) 
+    do
+      st.(primes.(!j) * !i) <- true;
+      (* Printf.printf "%d " (primes.(!j) * !i); *)
+      if !i mod primes.(!j) = 0 then quit_loop := true ;
+      j := !j + 1
+    done;
+    (* Printf.printf "end\n"; *)
+    i := !i + 1
+  done;
+  Array.to_list (Array.sub primes 0 !count)
 
+
+(* <38> Goldbach's Conjecture 
+   Require: n must be even positive number. *)
+let goldbach n = 
+  let module Pset = Set.Make(Int) in 
+  let plst = all_primes 2 n in 
+  let pset = Pset.of_list plst in
+  let rec goldbach_aux = function
+    | [] -> failwith "may be not in mathematics"
+    | h :: t -> if Pset.mem (n - h) pset then (h, n - h) else goldbach_aux t
+  in
+  goldbach_aux plst
+
+(** <39> A List of Goldbach Compositions 
+    Require: a <= b*)
+let goldbach_list a b = 
+  let module Pset = Set.Make(Int) in
+  let plst = all_primes 2 b in 
+  let pset = Pset.of_list plst in 
+  let rec goldbach_aux n = function
+    | [] -> failwith "may be not in mathematics"
+    | h :: t -> if Pset.mem (n - h) pset then (h, n - h) else goldbach_aux n t
+  in
+  let rec goldbach_list_aux acc a b = 
+    if a > b then acc
+    else 
+      goldbach_list_aux (if a mod 2 = 0 then (a, goldbach_aux a plst) :: acc else acc) (a + 1) b
+  in 
+    List.rev (goldbach_list_aux [] a b)
+    
+  
+    
