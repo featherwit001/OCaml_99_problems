@@ -104,3 +104,15 @@ linear sieve: O(n)
 get rid of composite numbers with its smallest prime factor.
 
 quit loop like break
+
+
+## 41 Truth Tables for Logical Expressions
+
+
+## 42 Gray Code
+
+
+## 43 Huffman Code 
+use min heap
+
+

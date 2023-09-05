@@ -2,4 +2,5 @@
  (name ocaml99)
  ; (public_name ocaml99 )
  (libraries unix )
+ (flags (:standard -w -27 -warn-error -27-32))
 ) 
