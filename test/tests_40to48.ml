@@ -1,9 +1,9 @@
 open OUnit2
 open Tests_utilities
 open Ocaml99
-open F_40to48
+open F_40to43
 
-let tests_for_40to48 = "tests_for_40to48" >::: [
+let tests_for_40to43 = "tests_for_40to43" >::: [
   make_test_for_equal "table2" 
   [(true, true, true); (true, false, true); (false, true, false);
   (false, false, false)]
@@ -30,4 +30,22 @@ let tests_for_40to48 = "tests_for_40to48" >::: [
  ([("a", 45); ("b", 13); ("c", 12); ("d", 16);("e", 9); ("f", 5)] 
   |> HuffmanCode.of_list
   |> HuffmanCode.to_list);
+]
+
+open G_44to50
+
+let tests_for_44to50 = "tests_for_44to50" >::: [
+  make_test_for_equal "complete binary trees"
+  [Node ('x', Node ('x', Empty, Empty),
+  Node ('x', Node ('x', Empty, Empty), Empty));
+
+  Node ('x', Node ('x', Empty, Empty),
+  Node ('x', Empty, Node ('x', Empty, Empty)));
+
+  Node ('x', Node ('x', Node ('x', Empty, Empty), Empty),
+  Node ('x', Empty, Empty));
+
+  Node ('x', Node ('x', Empty, Node ('x', Empty, Empty)),
+  Node ('x', Empty, Empty))]
+  (cbal_tree 4);
 ]

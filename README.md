@@ -116,3 +116,5 @@ quit loop like break
 use min heap
 
 
+## 44 Construct Completely Balanced Binary Trees 
+the big problem could be reduced to smaller problem, and it can be 0 elt in the Balanced Binary Trees

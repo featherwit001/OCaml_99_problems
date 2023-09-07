@@ -1,0 +1,23 @@
+let leftbase = base + llspan in
+    let rightbase = rootbase + rlspan in 
+    let slashbase = (rootbase + leftbase) / 2 in 
+    let backslashbase = (rootbase + rightbase) / 2 in 
+    if l <> Empty then  Stack.push (depth + 1, slashbase , "/") stack;
+    if r <> Empty then Stack.push (depth + 1, backslashbase, "\\") stack; 
+
+let fill_blank n =
+  String.make n ' ' 
+
+let render lst = 
+  let rec render_aux acc cur line col = function
+    | [] -> acc ^ "\n" ^ cur
+    | (d, b, s) :: t -> 
+      Printf.printf "line = %d, d = %d\n"line  d;
+      if d <> line then
+        render_aux (acc ^ "\n" ^ cur) ((fill_blank b) ^ s) d b t
+      else 
+        render_aux acc (cur ^ (fill_blank (b - col))^ s) line b t
+  in
+    render_aux "" "" 0 0 lst
+
+if root_left_base  -leftbase <= 2 then leftbase else

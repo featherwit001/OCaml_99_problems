@@ -13,7 +13,8 @@ let all_tests = "all tests" >::: [tests_for_1to7;
                                   tests_for_22to28;
                                   tests_for_29to39;
                                   
-                                  tests_for_40to48;
-                                  tests_for_heap]
+                                  tests_for_40to43;
+                                  tests_for_heap;
+                                  tests_for_44to50]
 
 let _ = run_test_tt_main all_tests

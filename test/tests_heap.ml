@@ -2,8 +2,7 @@ open OUnit2
 open Tests_utilities
 
 open Ocaml99
-open F_40to48
-
+open Heap
 let max_len = 1000
 let max_value = max_len / 2
 let min_value = - max_value
