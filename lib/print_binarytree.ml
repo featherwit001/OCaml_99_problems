@@ -1,5 +1,4 @@
-open G_44to50 
-
+open G_44to49
 let id x = x 
 let max_col = 100
 
@@ -16,40 +15,6 @@ depth
 *)
 (* calculate the [t] left-right span 
    Require: *)
-let rec tree_span t depth base stack to_string = 
-  match t with 
-  | Empty -> (depth, 0, 0, 0)
-  | Node(x, l, r) -> 
-    let x = to_string x in 
-    let xspan = String.length x in 
-
-    (* get left subtree  *)
-    let (ldepth, llspan, lvspan, lrspan) = tree_span l (depth + 2) base stack to_string in
-    let leftspan = llspan + lrspan + lvspan in 
-    let root_right_base = base + leftspan + xspan in
-    let root_left_base = base + leftspan in  
-
-    let (rdepth, rlspan, rvspan, rrspan) = tree_span r (depth + 2) root_right_base stack to_string in
-    let rightspan = rlspan + rrspan + rvspan in
-
-    let left_child_left_base = base + llspan in 
-    let right_child_left_base = base + leftspan + xspan + rlspan in 
-    let slashbase =  (left_child_left_base + lvspan + root_left_base ) / 2 in 
-    let backslashbase = (right_child_left_base + root_right_base) / 2 in 
-    Stack.push (depth, base + leftspan, x, xspan) stack;
-    
-    if l <> Empty then begin 
-      Printf.printf "root = %s leftspan = %d root_left_base = %d leftbase = %d slashbase = %d\n" 
-        x leftspan root_left_base left_child_left_base slashbase;
-      Stack.push (depth + 1, slashbase, "/", 1) stack
-    end;
-    if r <> Empty then begin 
-      Printf.printf "root = %s root_rightbase = %d rightbase = %d backslashbase = %d\n" 
-        x root_right_base right_child_left_base backslashbase;
-      Stack.push (depth + 1, backslashbase, "\\", 1) stack;  
-    end;
-    (depth, leftspan, xspan, rightspan)
-
 
 (** [tree_span2 tree depth base stack to_string] is 
     (depth, left_subtree_span, root_span, right_subtree_span) *)
@@ -211,8 +176,8 @@ let print_binary_trees elt_to_string trees =
   |> render
   |> print_endline
   
-  
 
+let print_char_binary_trees = print_binary_trees Char.escaped  
   
   
 let tree0 = Node ("1", Empty, Empty)

@@ -101,7 +101,8 @@ let gray_iter n =
 
 (** <43>  Huffman Code *)
 open Heap  
-open G_44to50
+open G_44to49
+(* open Print_binarytree *)
 (** Require: 
     symbols must be unique.
     huffman code must have at least two symbols *)
@@ -112,8 +113,8 @@ module HuffmanCode = struct
     | Node of int * hufftree *  hufftree
 
   let rec to_binarytree = function
-    | Leaf (s, i) -> G_44to50.Node(s , Empty, Empty)
-    | Node (i, l, r) -> G_44to50.Node (string_of_int i,to_binarytree l, to_binarytree r)
+    | Leaf (s, i) -> G_44to49.Node(s , Empty, Empty)
+    | Node (i, l, r) -> G_44to49.Node (string_of_int i,to_binarytree l, to_binarytree r)
   
   let to_string = function
     | Leaf (s, _) -> s

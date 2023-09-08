@@ -117,4 +117,97 @@ use min heap
 
 
 ## 44 Construct Completely Balanced Binary Trees 
+
+all complete balance binary trees with [n] nodes, the balance factor is 0.
+
 the big problem could be reduced to smaller problem, and it can be 0 elt in the Balanced Binary Trees
+
+Cartesian product of two sub-trees
+
+functional programming memoization
+
+implement print_binary_tree and print_binary_tree with a recursive method and render many sets of point on a Cartesian plane (i.e. the cmd terminal) to print binary trees in form of a graph rather then nested indentation.
+
+for instance: 
+
+ x          x         x         x         x         x
+/  \       / \       /  \      / \       / \       / \
+x  x       x x       x  x      x x       x  x      x  x
+ \        /         / \           \        /         / \
+ x        x         x x           x        x         x x
+
+## 48 Construct Height-Balanced Binary Trees
+
+all balance binary trees with [h] height
+
+alse combine left sub-trees wiht right sub-trees 
+
+balance factor is 0 -1 or 1
+
+## 49 Construct Height-Balanced Binary Trees With a Given Number of Nodes
+
+Maximum nodes of h height is calculated by formula. 
+
+so many recursive methods for the tree problems:
+Minimum nodes of h height 
+Minimum height of n nodes
+Maximum height of n nodes
+
+hbal_tree_nodes
+
+all balanced binary tree with `n` nodes which is different form complete binary trees
+
+
+reduce the height and nodes by two mutually recursive functions
+
+	top
+   /   \
+ left  right
+
+step 1:
+
+form `n` nodes get the max height and min height
+
+calculate `n` with each possible height `h`
+
+step2 : for the combination fo (`n`, `h`) ,have three possible reduced sub-problems
+
+				   left_h  right_h  nodes 
+				   (h - 1) (h - 1) (n - 1)
+the `h` of `top` = (h - 1) (h - 2) (n - 1)
+				   (h - 2) (h - 1) (n - 1)
+
+step3 : for each combinations of (`left_h`, `right_h`, `n`)
+
+the left sub-tree nodes plus right sub-tree nodes equals to `n`
+so just pay attention to left sub-tree nodes
+
+the left sub-tree nodes is limited by 
+	min_left_nodes    and   max_left_nodes
+	 max of                      min of 
+	min_nodes left_h        max_nodes left_h
+ n - max_nodes right_h      n - min_nodes right_h
+
+so we can get the sequences of every possible nodes of left sub tree.
+now we get the left sub tree's height and nodes 
+such as (left_h, left_n1); (left_h, left_n2) .... ; (left_h, left_na)
+
+the right sub tree's nodes right_nx can be calculated by n - left_nx
+thus get the similar combinations :
+		(right_h, right_n1); (right_h, right_n1); .... ; (right_h, right_n1)
+
+so the sub problems are homologous to the previous question in step 2.
+
+the whole questions can be solved by reducing the scala of the data, i.e. recursive method.
+
+
+optimaization:
+
+List.rev_append (tr) and @ (not tr) is difference, 
+
+the former could not raise stackover flow but the latter could
+
+using acc and symmetric is always better than 
+memo using Hashtbl no matter which functions was memoizated.
+
+thus this question does not have so many overlapping sub-problems.

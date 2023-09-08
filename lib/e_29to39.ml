@@ -102,6 +102,19 @@ let timeit f n =
   let t1 = Unix.gettimeofday () in
    t1 -. t0
 
+let rec time_compare_aux acc count f1 f2 n =
+  if n = 0 then acc /. float(count)
+  else 
+    let time1 = timeit f1 n in
+    let time2 = timeit f2 n in
+    let acc' = time1 -. time2 +. acc in
+    time_compare_aux acc' count f1 f2 (n - 1) 
+
+
+let time_compare ?(count = 5) f1 f2 n =
+  time_compare_aux 0. count f1 f2 n
+  
+
 (** <37>  A List of Prime Numbers 
     Require: a must be 2*)
 let all_primes _a n = 
