@@ -27,7 +27,7 @@ module type Heap = sig
 end
     
 (* : (Heap with type key = Ord.t ) *)
-module Make (Ord : OrderType) : (Heap with type key = Ord.t ) = struct
+module Make (Ord : OrderType) : (Heap with type key = Ord.t )   = struct
   type key = Ord.t
 
   (* 
@@ -136,7 +136,8 @@ module Make (Ord : OrderType) : (Heap with type key = Ord.t ) = struct
   let rec is_order = function
   | [] | [_] -> true
   | h1 :: (h2 :: t' as t) -> 
-      if Ord.compare h1 h2  > 0 then false else is_order t
+      if Ord.compare h1 h2  > 0 then false else is_order t 
+  
 end
     
     

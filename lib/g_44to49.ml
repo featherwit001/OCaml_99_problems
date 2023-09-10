@@ -296,8 +296,6 @@ let hbal_tree_nodes_optimaization n =
                               
 
 (* memoization optimaization *)
-
-
 let hbal_tree_nodes_memo n = 
   let hashtbl1 = Hashtbl.create 16 in 
   let rec bal_tree_height_nodes_optim h n = 

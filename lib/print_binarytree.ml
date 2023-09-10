@@ -1,6 +1,6 @@
 open G_44to49
 let id x = x 
-let max_col = 100
+let max_col = 130
 
 (* Base of left subtree and root is 0; 
    Base right subtree is left substree span + 1 
@@ -85,7 +85,7 @@ let rec fill_newline acc n =
    5 
    6 
   line*)
-let render (range, lst) =
+let render lst =
   let rec render_aux acc cur line col = function
     | [] -> acc ^ cur
     | (d, b, s, slen) :: t -> 
@@ -108,7 +108,10 @@ let binary_tree_to_cordinate_system elt_to_string t =
 
 let print_binary_tree elt_to_string t = 
   t |> binary_tree_to_cordinate_system elt_to_string 
+    |> snd 
     |> render |> print_endline
+
+(* -- print binary trees -- *)
 
 let horizontal_translation delta (range, lst)  = 
   let (up, down, left, right) = range in 
@@ -155,6 +158,9 @@ let rec arrange_points_aux acc max_vertical_range_in_this_set depth base = funct
       let acc' = new_points @ acc in 
       arrange_points_aux acc' max_vertical_range_in_this_set' depth base' t
 
+(* input (range * points) list
+   range = (up,, down, left, right)
+   point = (depth, base , s , slen) depth = y, base = x  *)
 let arrange_points p = arrange_points_aux [] 0 0 0 p
 
 let trees_to_points elt_to_string trees =
@@ -173,12 +179,89 @@ let print_binary_trees elt_to_string trees =
   trees
   |> trees_to_points elt_to_string
   |> arrange_points
+  |> snd
   |> render
   |> print_endline
   
 
 let print_char_binary_trees = print_binary_trees Char.escaped  
   
+
+(* tag each node with x y . x form x_init , y form y_init*)
+let layout_binary_tree_compressed ?(x_init=0) ?(y_init=0) ?(d_step=2) to_string = 
+  let rec translate_x delta = function
+    | Empty -> Empty
+    | Node ((v, vlen, x, y), l, r) ->
+      Node ((v, vlen, x + delta, y), translate_x delta l, translate_x delta r) in
+  let rec distance_to_move lr rl = match lr, rl with
+    | lrx :: lrt , rlx :: rlt -> max (lrx - rlx) (distance_to_move lrt rlt) 
+    | [], _ | _, [] -> 0 in
+  let rec merge_profile p1 p2 = match p1, p2 with
+    | x1 :: tl1, x2 :: tl2 -> x1 :: merge_profile tl1 tl2
+    | [], _ -> p2
+    | _, [] -> p1 in
+  let rec layout depth = function
+    | Empty -> ([], Empty, [])
+    | Node (v, l, r) -> 
+      let v = to_string v in 
+      let vlen = String.length v in 
+      let ll, l', lr = layout (depth + d_step) l in 
+      let rl, r', rr = layout (depth + d_step) r in
+      let d = 1 + distance_to_move lr rl / 2 in  (* key *)
+      let ll = List.map (fun x -> x - d) ll in
+      let lr = List.map (fun x -> x - d) lr in
+      let rl = List.map ((+) d) rl in 
+      let rr = List.map ((+) d) rr in 
+      let lprofile = merge_profile ll rl in
+      let rprofile = merge_profile rr lr in 
+      (-(vlen / 2) :: lprofile,
+       Node ((v, vlen, -(vlen / 2), depth), translate_x (-d) l', translate_x d r'),
+       ((vlen + 2 - 1) / 2) :: rprofile) 
+    in 
+    fun tree -> let l, tree', r = layout y_init tree in
+                let x_min = List.fold_left min 0 l in
+                let x_max = List.fold_left max 0 r in
+                let y_max = (max (List.length l) (List.length r)) * d_step in 
+                let tree'' = translate_x (x_init - x_min) tree' in
+                let range = (y_init, y_max, x_init, (abs x_min) + abs (x_max)) in 
+                (range, tree'')
+
+let rec layout_tree_to_points_aux px py stack  = function
+  | Empty -> (px, py)
+  | Node ((s,slen, x, y), l, r) ->
+    Stack.push (y, x, s, slen) stack;
+    let (lx, ly) = layout_tree_to_points_aux x y stack l in 
+    let (rx, ry) = layout_tree_to_points_aux x y stack r in
+    (* floor *)
+    if l <> Empty then begin Stack.push (y + 1, (lx + x + slen/2 ) / 2, "/", 1) stack end;
+    (* ceiling *)
+    if r <> Empty then begin Stack.push (y + 1, (rx + x + slen/2 + 2 - 1) / 2, "\\", 1) stack end;
+    (x + slen/2, y)
+
+let layout_tree_to_points tree = 
+  let stack = Stack.create () in
+  ignore (layout_tree_to_points_aux 0 0 stack tree); 
+  stack |> Stack.to_seq |> List.of_seq |> List.sort compare 
+
+
+let print_binary_tree_compressed to_string tree = 
+  let range, layout_tree = layout_binary_tree_compressed to_string tree in
+  let points = layout_tree_to_points layout_tree in
+  render points |> print_endline
+  
+
+let print_binary_trees_compressed to_string trees =
+  trees 
+  |> List.map (
+      fun tree -> 
+        let range, layout_tree = layout_binary_tree_compressed to_string tree in 
+        let points = layout_tree_to_points layout_tree in
+        (range, points)
+        )
+  |> arrange_points
+  |> snd
+  |> render
+  |> print_endline
   
 let tree0 = Node ("1", Empty, Empty)
 let trees1 = [tree0; tree0]

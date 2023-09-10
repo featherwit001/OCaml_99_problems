@@ -111,9 +111,62 @@ quit loop like break
 
 ## 42 Gray Code
 
+for `n` bit code, there are 2^n Gray Code.
+
+two method to generate Gray Code.
+
+
+Recrusive:
+
+the Gray code is symmetic:
+
+```
+0  ->   0   ->  01
+1       1	    01
+        1		11
+        0		10
+```
+
+init with ["0","1"], recursive depth is `n`
+       
+Iterative: 
+
+start from "000...0" which containing `n` "0".
+
+change code is turning "0" to "1" and turning "1" to "0" 
+
+step one :
+	change the rightest bit
+	get a new gray code
+step two:
+	change bit at the left of the rightest "1".
+	e.g. "0001001" -> "0001011"
+	get a new gray code
+step three: 
+	repeat the step1 and step2, 1 2 1 2
+	until get 2^n - 1 gray code (and the first one "0000....0")
+	or
+	get the code "1000....0" (all bits are "0" except the first one)
+
 
 ## 43 Huffman Code 
 use min heap
+
+transform the charater-frequency tuple lst into the  Leaf of Huffman tree
+
+put all the Leaves into the min heap
+
+get the two minimum Huffman trees from the min heap
+
+merge two trees, the value of new root is the sum of two trees' weight
+
+put the new tree into the min heap
+
+repeat pop two push one until the heap only contains one elements
+
+the last element is the Huffman tree of the given charater-frequency tuple lst
+
+get the Huffman code form the Huffman tree using in-order traversal by two accumulation recursive method.
 
 
 ## 44 Construct Completely Balanced Binary Trees 
@@ -126,15 +179,16 @@ Cartesian product of two sub-trees
 
 functional programming memoization
 
-implement print_binary_tree and print_binary_tree with a recursive method and render many sets of point on a Cartesian plane (i.e. the cmd terminal) to print binary trees in form of a graph rather then nested indentation.
+implement **print_binary_tree** and **print_binary_trees** with a recursive method and render many sets of point on a Cartesian plane (i.e. the cmd terminal) to print binary trees in form of a graph rather then nested indentation.
 
 for instance: 
-
+```
  x          x         x         x         x         x
 /  \       / \       /  \      / \       / \       / \
 x  x       x x       x  x      x x       x  x      x  x
  \        /         / \           \        /         / \
  x        x         x x           x        x         x x
+```
 
 ## 48 Construct Height-Balanced Binary Trees
 
@@ -157,12 +211,16 @@ hbal_tree_nodes
 
 all balanced binary tree with `n` nodes which is different form complete binary trees
 
+**solution**
 
 reduce the height and nodes by two mutually recursive functions
-
+```
 	top
    /   \
  left  right
+
+```
+
 
 step 1:
 
@@ -171,22 +229,25 @@ form `n` nodes get the max height and min height
 calculate `n` with each possible height `h`
 
 step2 : for the combination fo (`n`, `h`) ,have three possible reduced sub-problems
-
+```
 				   left_h  right_h  nodes 
 				   (h - 1) (h - 1) (n - 1)
 the `h` of `top` = (h - 1) (h - 2) (n - 1)
 				   (h - 2) (h - 1) (n - 1)
+```
 
 step3 : for each combinations of (`left_h`, `right_h`, `n`)
 
 the left sub-tree nodes plus right sub-tree nodes equals to `n`
 so just pay attention to left sub-tree nodes
 
+```
 the left sub-tree nodes is limited by 
 	min_left_nodes    and   max_left_nodes
 	 max of                      min of 
 	min_nodes left_h        max_nodes left_h
  n - max_nodes right_h      n - min_nodes right_h
+```
 
 so we can get the sequences of every possible nodes of left sub tree.
 now we get the left sub tree's height and nodes 
@@ -201,7 +262,7 @@ so the sub problems are homologous to the previous question in step 2.
 the whole questions can be solved by reducing the scala of the data, i.e. recursive method.
 
 
-optimaization:
+**optimaization**:
 
 List.rev_append (tr) and @ (not tr) is difference, 
 
