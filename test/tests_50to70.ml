@@ -1,12 +1,13 @@
 open OUnit2
-open Ocaml99.H_50to60
-open Tests_utilities
 open Ocaml99.G_44to49
+open Ocaml99.H_50to57
+open Ocaml99.I_58to70
+open Tests_utilities
 let example_tree =
   Node ('a', Node ('b', Node ('d', Empty, Empty), Node ('e', Empty, Empty)),
        Node ('c', Empty, Node ('f', Node ('g', Empty, Empty), Empty)))
 
-let tests_for_50to60  = "tests_for_50to60" >::: [
+let tests_for_50to57  = "tests_for_50to57" >::: [
   make_test_for_equal "count leaves"
   0
   (count_leaves Empty);
@@ -66,5 +67,12 @@ let tests_for_50to60  = "tests_for_50to60" >::: [
     Node (('s', 7, 4), Node (('q', 6, 5), Empty, Empty), Empty)),
    Empty)))
   (layout_binary_tree_3 example_layout_tree3)   
+]
 
+
+let tests_for_58to70 = "tests_for_58to70" >::: [
+  make_test_for_equal "string_of_tree"
+  tree5_string
+  (string_of_tree example_layout_tree5);
+  
 ]

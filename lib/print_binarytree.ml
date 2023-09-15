@@ -1,6 +1,6 @@
 open G_44to49
 let id x = x 
-let max_col = 130
+let max_col = 110
 
 (* Base of left subtree and root is 0; 
    Base right subtree is left substree span + 1 
@@ -129,7 +129,7 @@ let vertical_translation  delta (range, lst)=
       lst |> List.map (fun (depth, base, s, slen) -> (depth + delta, base,s ,slen))
   in ((up + delta, down + delta,left, right), lst_moved)
 
-let rec arrange_points_aux acc max_vertical_range_in_this_set depth base = function
+let rec arrange_points_aux ?(internal=3) acc max_vertical_range_in_this_set depth base = function
   | [] -> ((0, depth, 0, base ) , List.stable_sort compare acc) 
   | ((range, points) as shapes) ::t ->
     let (up, down, left, right) = range in
@@ -143,7 +143,7 @@ let rec arrange_points_aux acc max_vertical_range_in_this_set depth base = funct
         |> horizontal_translation (base' - left) 
         |> vertical_translation (depth' - up)
       in 
-      let base'' = base' + right - left + 1 + 5 in 
+      let base'' = base' + right - left + 1 + internal in 
       let acc' = new_points @ acc in
       arrange_points_aux acc' max_vertical_range_in_this_set' depth' base'' t  
     else
@@ -152,7 +152,7 @@ let rec arrange_points_aux acc max_vertical_range_in_this_set depth base = funct
         |> horizontal_translation (base - left) 
         |> vertical_translation (depth - up)
       in
-      let base' = base + right - left + 1 + 5 in
+      let base' = base + right - left + 1 + internal in
       let max_vertical_range_in_this_set' =  
             max max_vertical_range_in_this_set (down - up + 1) in 
       let acc' = new_points @ acc in 
