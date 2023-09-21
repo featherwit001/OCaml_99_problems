@@ -27,7 +27,7 @@ module type Heap = sig
 end
     
 (* : (Heap with type key = Ord.t ) *)
-module Make (Ord : OrderType) : (Heap with type key = Ord.t )   = struct
+module Make (Ord : OrderType) : (Heap with type key = Ord.t)   = struct
   type key = Ord.t
 
   (* 

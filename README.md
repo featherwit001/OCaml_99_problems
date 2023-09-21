@@ -215,9 +215,9 @@ all balanced binary tree with `n` nodes which is different form complete binary 
 
 reduce the height and nodes by two mutually recursive functions
 ```
-	top
-   /   \
- left  right
+   top
+  /   \
+left  right
 
 ```
 
